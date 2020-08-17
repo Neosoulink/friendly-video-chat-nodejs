@@ -8,7 +8,7 @@ Then you can run project with : ``npm run dev`` and goto your browser and type `
 
 ## Face detection
 
-> 🔖 Actually face detection have some issues and it's not yet fixed
+> 🔖 Presently face detection have some issues and it's not yet fixed
 
 Go to ``public/js/videoChatClient.js`` and uncomment ``(UNCOMMENT HERE)`` section.
 
