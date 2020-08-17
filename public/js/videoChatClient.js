@@ -6,8 +6,8 @@ window.addEventListener('load', () => {
 	const clientVideo = document.createElement('video')
 	clientVideo.muted = true
 	const messageGrid = document.getElementById('message-grid')
+	const formChatMessage = document.getElementById('panel-footer');
 	const msgChatElement = document.getElementById('msg-chat')
-	const BtnSenDMsg = document.getElementById('btn-send-msg')
 
 	// Variables
 	const socket = io()
@@ -24,11 +24,12 @@ window.addEventListener('load', () => {
 		} /* Sample servers, please use appropriate ones */
 	});
 	const peers = {}
+	const username = localStorage.getItem('username');
 	let UserId
 
 	// Video Chat part
 	//=============================
-	navigator.mediaDevices.getUserMedia({
+	launchAfterFaceModel(navigator.mediaDevices.getUserMedia({
 		video: true,
 		audio: true
 	}).then(stream => {
@@ -45,7 +46,7 @@ window.addEventListener('load', () => {
 		socket.on('user-connected', userId => {
 			connectToNewUser(userId, stream)
 		})
-	})
+	}))
 
 	socket.on('user-disconnected', userId => {
 		if (peers[userId]) peers[userId].close()
@@ -60,6 +61,7 @@ window.addEventListener('load', () => {
 		const call = clientPeer.call(userId, stream)
 		const video = document.createElement('video')
 		call.on('stream', userVideoStream => {
+
 			addVideoStream(video, userVideoStream)
 		})
 		call.on('close', () => {
@@ -74,7 +76,26 @@ window.addEventListener('load', () => {
 		video.addEventListener('loadedmetadata', () => {
 			video.play()
 		})
-		video.classList.add('col-md-6')
+
+		// Face detection (UNCOMMENT HERE)
+		//===========================
+		// Uncomment this part for use face detéction (Caution: For now face detection are not fix!)
+		//===========================
+		//video.addEventListener('play', () => {
+		//	const canvas = faceapi.createCanvasFromMedia(video)
+		//	videoGrid.append(canvas)
+		//	const displaySize = { width: 700, height: 500 }
+		//	setInterval(async () => {
+		//		const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions()
+		//		const resizedDetections = faceapi.resizeResults(detections, displaySize)
+		//		canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
+		//		faceapi.draw.drawDetections(canvas, resizedDetections)
+		//		faceapi.draw.drawFaceLandmarks(canvas, resizedDetections)
+		//		faceapi.draw.drawFaceExpressions(canvas, resizedDetections)
+		//	}, 700)
+		//})
+
+		video.classList.add('col-md-4')
 		videoGrid.append(video)
 	}
 	// End Video Chat
@@ -82,9 +103,10 @@ window.addEventListener('load', () => {
 
 	// Chat Message part
 	// ============================
-	BtnSenDMsg.onclick = () => {
+	formChatMessage.addEventListener('submit', (e) => {
+		e.preventDefault()
 		sendMessage()
-	}
+	})
 
 	function sendMessage() {
 		if (msgChatElement.value) {
@@ -115,7 +137,20 @@ window.addEventListener('load', () => {
 		}
 		messageGrid.innerHTML += message;
 	}
-		// End Chat Message
+	// End Chat Message
 	//=============================
+
+	// Face Detection part
+	//=============================
+	console.log(faceapi.nets)
+
+	function launchAfterFaceModel(event) {
+		Promise.all([
+			faceapi.nets.tinyFaceDetector.loadFromUri('/js/face-api-models'),
+			faceapi.nets.faceLandmark68Net.loadFromUri('/js/face-api-models'),
+			faceapi.nets.faceRecognitionNet.loadFromUri('/js/face-api-models'),
+			faceapi.nets.faceExpressionNet.loadFromUri('/js/face-api-models'),
+		]).then(event)
+	}
 
 });

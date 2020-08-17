@@ -1,3 +1,38 @@
-<div class="d-flex align-items-center justify-content-center bg-light" style="min-height: 100vh;">
-	<a href="/video-chat" class="btn btn-primary">Create New Room <i class="fa fa-arrow-right" aria-hidden="true"></i></a>
+<div class="d-flex align-items-center justify-content-center bg-light position-relative" style="
+		min-height: 100vh;
+		background-image: url(/img/background-1.jpg);
+		background-size: cover;
+		background-repeat: no-repeat;
+		background-position: center;">
+
+	<div class="position-absolute h-100 w-100 d-flex align-items-center justify-content-center"
+		style="background-color: rgba(0, 0, 0, 0.5);">
+
+		<a href="/video-chat" class="btn btn-primary mr-5">Create new room <i class="fas fa-users"
+				aria-hidden="true"></i></a>
+
+		<form id="form-join-room" action="/">
+			<div class="input-group">
+				<input type="text" name="roomId" class="form-control">
+				<div class="input-group-append">
+					<button class="btn btn-primary" type="submit">Join room <i class="fa fa-sign-in"
+							aria-hidden="true"></i></button>
+				</div>
+			</div>
+		</form>
+
+	</div>
 </div>
+
+<script>
+	const form = document.getElementById('form-join-room');
+
+	form.addEventListener('submit', (e) => {
+		e.preventDefault()
+
+		let roomId = form['roomId'].value;
+		if (roomId) {
+			window.location.href = '/video-chat/' + roomId;
+		}
+	})
+</script>
