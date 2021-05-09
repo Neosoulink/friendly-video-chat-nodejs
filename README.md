@@ -4,7 +4,7 @@
 
 run ``npm install`` command to install depedencies
 
-Then you can run project with : ``npm run dev`` and goto your browser and type ``localhost:3000`` 
+then you can run project with : ``npm run dev`` and goto your browser and type ``localhost:3000`` 
 
 ## Face detection
 
